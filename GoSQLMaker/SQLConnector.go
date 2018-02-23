@@ -7,8 +7,31 @@ import (
 	"log"
 )
 
-//https://github.com/denisenkom/go-mssqldb/blob/master/examples/simple/simple.go 참고
+type SQLConnector struct {
+	Conn *sql.DB
+}
 
+
+func (p* SQLConnector) Connect(server string, port int, id string, pw string, db string) (error, string){
+
+	connectStr := fmt.Sprintf("server=%s;port=%d;user id=%s;password=%s;database=%s", server, port, id, pw, db)
+
+	cn, err := sql.Open("mssql", connectStr)
+	if err != nil{
+		log.Fatal(err)
+		return err, connectStr
+	}
+
+	p.Conn = cn
+	return nil, ""
+}
+
+func (p* SQLConnector) Close(){
+	defer p.Conn.Close();
+}
+
+//https://github.com/denisenkom/go-mssqldb/blob/master/examples/simple/simple.go 참고
+/*
 func main() {
 	db, err := sql.Open("mssql", "server=175.207.4.91;port=1433;user id=nupn56;password=Dudah256u;database=UserContent")
 	if err != nil{
@@ -36,3 +59,4 @@ func main() {
 
 	defer rows.Close();
 } 
+*/
